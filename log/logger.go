@@ -26,33 +26,33 @@ func init() {
 }
 
 func Info(v ...interface{}) {
-	infoLogger.Println(v)
+	infoLogger.Println(v...)
 }
 
 func Infof(format string, v ...interface{}) {
-	infoLogger.Printf(format, v)
+	infoLogger.Printf(format, v...)
 }
 
 func Debug(v ...interface{}) {
-	debugLogger.Println(v)
+	debugLogger.Println(v...)
 }
 
 func Debugf(format string, v ...interface{}) {
-	debugLogger.Printf(format, v)
+	debugLogger.Printf(format, v...)
 }
 
 func Warn(v ...interface{}) {
-	warnLogger.Println(v)
+	warnLogger.Println(v...)
 }
 
 func WarnF(format string, v ...interface{}) {
-	warnLogger.Printf(format, v)
+	warnLogger.Printf(format, v...)
 }
 
 func Error(v ...interface{}) {
-	errorLogger.Println(v)
+	errorLogger.Println(v...)
 }
 
 func Errorf(format string, v ...interface{}) {
-	errorLogger.Printf(format, v)
+	errorLogger.Printf(format, v...)
 }
