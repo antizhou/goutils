@@ -15,3 +15,10 @@ func UnixTsOfTodayStart(ts int64) int64 {
 	sec := tms.Second()
 	return tms.Unix() - int64(hour*60*60) - int64(min*60) - int64(sec)
 }
+
+func AlignTimeStamp(tms int64, step int64) int64 {
+	if step == 0 {
+		step = 60
+	}
+	return tms - tms%step
+}
