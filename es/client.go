@@ -20,41 +20,45 @@ func Init(hosts []string) *EsHelper {
 	}
 }
 
-func (o *EsHelper) SetUsername(username string) {
+func Helper() *EsHelper {
+	return &EsHelper{}
+}
+
+func (helper *EsHelper) SetUsername(username string) {
 	if username == "" {
 		return
 	}
-	o.username = username
+	helper.username = username
 }
 
-func (o *EsHelper) SetPassword(password string) {
+func (helper *EsHelper) SetPassword(password string) {
 	if password == "" {
 		return
 	}
-	o.password = password
+	helper.password = password
 }
 
-func (o *EsHelper) SetNiff() {
-	o.sniff = true
+func (helper *EsHelper) SetNiff() {
+	helper.sniff = true
 }
 
-func (o *EsHelper) GetClient() (*elastic.Client, error) {
-	if len(o.hosts) == 0 {
+func (helper *EsHelper) GetClient() (*elastic.Client, error) {
+	if len(helper.hosts) == 0 {
 		return nil, errors.New("es hosts is empty")
 	}
 
 	options := []elastic.ClientOptionFunc{
-		elastic.SetURL(o.hosts...),
+		elastic.SetURL(helper.hosts...),
 	}
 
-	if o.sniff {
+	if helper.sniff {
 		options = append(options,
 			elastic.SetSniff(true))
 	}
 
-	if o.username != "" && o.password != "" {
+	if helper.username != "" && helper.password != "" {
 		options = append(options,
-			elastic.SetBasicAuth(o.username, o.password))
+			elastic.SetBasicAuth(helper.username, helper.password))
 	}
 
 	client, err := elastic.NewClient(options...)
@@ -64,15 +68,15 @@ func (o *EsHelper) GetClient() (*elastic.Client, error) {
 	return client, nil
 }
 
-func (o *EsHelper) IndexRequest(esindex string, estype string, data interface{}) *elastic.BulkIndexRequest {
+func (helper *EsHelper) IndexRequest(esindex string, estype string, data interface{}) *elastic.BulkIndexRequest {
 	return elastic.NewBulkIndexRequest().Index(esindex).Type(estype).Doc(data)
 }
 
-func (o *EsHelper) DeleteRequest(esindex string, estype string, id string) *elastic.BulkDeleteRequest {
+func (helper *EsHelper) DeleteRequest(esindex string, estype string, id string) *elastic.BulkDeleteRequest {
 	return elastic.NewBulkDeleteRequest().Index(esindex).Type(estype).Id(id)
 }
 
-func (o *EsHelper) Bulk(client *elastic.Client, requests ...elastic.BulkableRequest) (*elastic.BulkResponse, error) {
+func (helper *EsHelper) Bulk(client *elastic.Client, requests ...elastic.BulkableRequest) (*elastic.BulkResponse, error) {
 	service := client.Bulk().Add(requests...)
 	return service.Do(context.TODO())
 }
