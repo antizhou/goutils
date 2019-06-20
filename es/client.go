@@ -12,6 +12,8 @@ type EsHelper struct {
 	password string
 	hosts    []string
 	sniff    bool
+
+	requests []elastic.BulkableRequest
 }
 
 func Init(hosts []string) *EsHelper {
@@ -74,6 +76,23 @@ func (helper *EsHelper) IndexRequest(esindex string, estype string, data interfa
 
 func (helper *EsHelper) DeleteRequest(esindex string, estype string, id string) *elastic.BulkDeleteRequest {
 	return elastic.NewBulkDeleteRequest().Index(esindex).Type(estype).Id(id)
+}
+
+func (helper *EsHelper) AddRequest(req elastic.BulkableRequest) {
+	if len(helper.requests) == 0 {
+		helper.requests = make([]elastic.BulkableRequest, 0)
+	}
+	helper.requests = append(helper.requests, req)
+}
+
+func (helper *EsHelper) GetRequestsAndClear() []elastic.BulkableRequest {
+	r := helper.requests
+	helper.clear()
+	return r
+}
+
+func (helper *EsHelper) clear() {
+	helper.requests = helper.requests[0:0]
 }
 
 func (helper *EsHelper) Bulk(client *elastic.Client, requests ...elastic.BulkableRequest) (*elastic.BulkResponse, error) {
